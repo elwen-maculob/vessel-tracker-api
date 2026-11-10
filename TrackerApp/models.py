@@ -1,0 +1,31 @@
+from django.db import models
+
+class Vessel(models.Model):
+    # Identifiers for HTTP requests (e.g., /api/vessel/<imo>/)
+    name = models.CharField(max_length=150, help_text="Vessel name e.g., CAPE G")
+    imo = models.CharField(max_length=50, unique=True, db_index=True, help_text="IMO number")
+    mmsi = models.CharField(max_length=50, blank=True, null=True, db_index=True, help_text="MMSI number")
+    
+    # --- ADD THESE MISSING FIELDS HERE ---
+    call_sign = models.CharField(max_length=50, blank=True, null=True, help_text="Radio call sign")
+    ship_type = models.CharField(max_length=100, blank=True, null=True, help_text="Type of ship")
+    destination_port = models.CharField(max_length=100, blank=True, null=True, help_text="Destination port")
+    draught = models.FloatField(blank=True, null=True, help_text="Maximum static draught")
+    # -------------------------------------
+
+    destination_lat = models.FloatField(blank=True, null=True, help_text="Target Destination Latitude")
+    destination_lon = models.FloatField(blank=True, null=True, help_text="Target Destination Longitude")
+
+    # Live Telemetry (Cached from AIS / API feeds)
+    latitude = models.FloatField(blank=True, null=True, help_text="Current latitude")
+    longitude = models.FloatField(blank=True, null=True, help_text="Current longitude")
+    speed_over_ground = models.FloatField(blank=True, null=True, help_text="SOG")
+    course_over_ground = models.FloatField(blank=True, null=True, help_text="COG")
+    navigational_status = models.CharField(max_length=100, blank=True, null=True, help_text="Nav status")
+
+    # Timestamps
+    last_updated = models.DateTimeField(auto_now=True, help_text="Timestamp of last packet")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} (IMO: {self.imo})"
