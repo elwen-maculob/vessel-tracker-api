@@ -16,8 +16,8 @@ class VesselDataService:
         
         target_mmsis = [str(mmsi) for mmsi in await get_mmsis_for_imos()]
 
-        # Removed ping_interval/timeout to prevent library-level keepalive crashes
-        async with websockets.connect(uri) as websocket:
+        # Added ping_interval and ping_timeout back to prevent idle timeout dropouts
+        async with websockets.connect(uri, ping_interval=20, ping_timeout=20) as websocket:
             subscription_payload = {
                 "APIKey": api_key,
                 "BoundingBoxes": [[[-90, -180], [90, 180]]], 
