@@ -13,9 +13,11 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 from pathlib import Path
 import dj_database_url
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-dev-secret-key-change-me')
 # Quick-start development settings - unsuitable for production
@@ -26,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-dev-secret-key-change-me
 
 # SECURITY WARNING: don't run with debug turned on in production!
 ###DEBUG = False
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ###ALLOWED_HOSTS = []
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
@@ -45,7 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    #'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,20 +79,21 @@ WSGI_APPLICATION = 'VesselTracker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
-#DATABASES = {
-    #'default': {
-       # 'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
-
-    #}
-#}
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
+        # Falls back to a local sqlite3 file if DATABASE_URL environment variable is missing
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=os.environ.get('DB_SSL_REQUIRE', 'False') == 'True'
     )
 }
+#DATABASES = {
+    #'default': dj_database_url.config(
+        #default=os.environ.get('DATABASE_URL'),
+        #conn_max_age=600,
+        #ssl_require=True
+    #)
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
@@ -128,7 +131,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
