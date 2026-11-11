@@ -83,8 +83,9 @@ class VesselDataService:
                         fields["call_sign"] = body["CallSign"].strip()
                     if body.get("Type"):
                         fields["ship_type"] = str(body["Type"])
-                    if body.get("Destination", "").strip():
-                        fields["destination_port"] = body["Destination"].strip()
+                    ais_dest = body.get("Destination", "").replace("@", "").strip()
+                    if ais_dest:
+                        fields["ais_destination"] = ais_dest
                     if body.get("MaximumStaticDraught"):
                         fields["draught"] = body["MaximumStaticDraught"]
                     if fields:

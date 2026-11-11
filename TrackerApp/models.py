@@ -9,6 +9,10 @@ class Vessel(models.Model):
     # --- ADD THESE MISSING FIELDS HERE ---
     call_sign = models.CharField(max_length=50, blank=True, null=True, help_text="Radio call sign")
     ship_type = models.CharField(max_length=100, blank=True, null=True, help_text="Type of ship")
+    ais_destination = models.CharField(
+        max_length=100, blank=True, null=True,
+        help_text="Destination as reported by the vessel via AIS (read-only)"
+    )
     destination_port = models.CharField(max_length=100, blank=True, null=True, help_text="Destination port")
     draught = models.FloatField(blank=True, null=True, help_text="Maximum static draught")
     # -------------------------------------

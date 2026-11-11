@@ -15,6 +15,7 @@ class VesselSerializer(serializers.ModelSerializer):
             'mmsi',
             'call_sign',
             'ship_type',
+            'ais_destination',
             'destination_port',
             'destination_lat',
             'destination_lon',
@@ -28,7 +29,7 @@ class VesselSerializer(serializers.ModelSerializer):
             'calculated_distance_nm',
             'estimated_time_of_arrival',
         ]
-        read_only_fields = ['id', 'last_updated', 'calculated_distance_nm', 'estimated_time_of_arrival']
+        read_only_fields = ['id', 'last_updated', 'calculated_distance_nm', 'estimated_time_of_arrival', 'ais_destination']
 
     def get_calculated_distance_nm(self, obj):
         metrics = VesselDataService.get_vessel_voyage_metrics(obj)
