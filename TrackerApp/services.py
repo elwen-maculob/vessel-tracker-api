@@ -37,11 +37,10 @@ class VesselDataService:
             print(f"Subscribed. Tracking MMSIs: {target_mmsis}")
 
             async for raw in ws:
+                message = json.loads(raw)
                 if "error" in message:
                     print(f"AISStream error: {message['error']}")
                     continue
-                
-                message = json.loads(raw)
                 msg_type = message.get("MessageType")
                 mmsi = str(message.get("MetaData", {}).get("MMSI", ""))
                 if mmsi not in target_mmsis:
