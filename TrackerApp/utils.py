@@ -32,11 +32,9 @@ class VesselDistanceCalculator:
     def calculate_time_to_destination(self, speed_over_ground):
         route_deviation_factor = 1.1
         corrected_distance = self.calculate_distance() * route_deviation_factor
-        if speed_over_ground and speed_over_ground > 0:
-            time_in_hours = corrected_distance / speed_over_ground
-            return time_in_hours
-        else:
-            return 0.0
+        if speed_over_ground and 1.0 <= speed_over_ground < 102.3:
+            return corrected_distance / speed_over_ground
+        return 0.0
 
     def calculate_eta(self, speed_over_ground):
         time_in_hours = self.calculate_time_to_destination(speed_over_ground)

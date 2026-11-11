@@ -5,9 +5,23 @@ from asgiref.sync import sync_to_async
 from django.utils import timezone
 from .models import Vessel
 
-# TEMPORARY: set to False once you've finished testing
+# TEMPORARY: set to False once finished testing
 DEBUG_UNFILTERED = False
-
+NAV_STATUS = {
+    0: "Under way using engine",
+    1: "At anchor",
+    2: "Not under command",
+    3: "Restricted manoeuvrability",
+    4: "Constrained by draught",
+    5: "Moored",
+    6: "Aground",
+    7: "Engaged in fishing",
+    8: "Under way sailing",
+    11: "Towing astern",
+    12: "Pushing ahead / towing alongside",
+    14: "AIS-SART active",
+    15: "Not defined",
+}
 
 class VesselDataService:
 
@@ -74,6 +88,7 @@ class VesselDataService:
                         longitude=body.get("Longitude"),
                         speed_over_ground=body.get("Sog"),
                         course_over_ground=body.get("Cog"),
+                        navigational_status=NAV_STATUS.get(body.get("NavigationalStatus"), "Unknown"),
                     )
                     print(f"Updated position for MMSI {mmsi}", flush=True)
 
