@@ -138,5 +138,4 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
-
-AISSTREAM_API_KEY = "1ec28efc9fa21f7c7d0c3f4b25276d3e1956ff9e"
+AISSTREAM_API_KEY = os.environ.get('AISSTREAM_API_KEY')
