@@ -6,7 +6,7 @@ from django.utils import timezone
 from .models import Vessel
 
 # TEMPORARY: set to False once you've finished testing
-DEBUG_UNFILTERED = True
+DEBUG_UNFILTERED = False
 
 
 class VesselDataService:
