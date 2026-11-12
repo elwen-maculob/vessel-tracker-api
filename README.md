@@ -1,32 +1,76 @@
-🚢 Asynchronous Real-Time AIS Vessel Tracker
-A high-performance, asynchronous Django REST application and WebSocket listener built to track global maritime vessel locations in real time using the aisstream.io API. Designed for fleet management, telemetry monitoring, and automated nautical metric calculations.🌟 Key FeaturesReal-Time Telemetry & Static Data Processing: Captures live position updates (PositionReport) and vessel metadata (ShipStaticData) via asynchronous WebSocket streaming.Dynamic Database Filtering: Monitors target vessels by IMO/MMSI dynamically queried from PostgreSQL or local SQLite via Django ORM.Resilient Connection Architecture: Features exponential backoff reconnection strategies and custom keepalive handling to maintain zero-drop connection stability.Nautical Metrics Engine: Automatically calculates distance to destination (nautical miles) and estimated time of arrival (ETA) based on real-time speed over ground (SOG) and course over ground (COG).Secure REST API: Exposes clean CRUD endpoints via Django REST Framework, protected by environment variable configurations.🏗 System Architecture               +-----------------------+
-               |    AISStream API      |
-               | (WebSocket WSS Feed)  |
-               +-----------+-----------+
-                           |
-                           v
-              +------------+------------+
-              | Async Listener Loop     |
-              | (websockets + asyncio)  |
-              +------------+------------+
-                           |
-                           v
-              +------------+------------+
-              | Django ORM & Service    |
-              | Layer (sync_to_async)   |
-              +------------+------------+
-                           |
-                           v
-              +------------+------------+
-              | Database (SQLite/Postgres)|
-              +------------+------------+
-                           ^
-                           |
-              +------------+------------+
-              |  Django REST API (DRF)  |
-              |  (GET / PATCH / DELETE) |
-              +-------------------------+
-🛠 Tech StackBackend Framework: Python 3.x, Django 6.1+, Django REST Framework (DRF)Asynchronous & WebSockets: asyncio, websockets, asgirefDatabase: Local SQLite (default fallback) or PostgreSQL / MySQL via dj-database-urlConfiguration Management: python-dotenv🚀 API EndpointsMethodEndpointDescriptionGET/api/Retrieve a list of all tracked vessels with current metricsGET/api/{imo}/Retrieve detailed telemetry and static data for a single vessel by IMOPOST/api/Add a new vessel to the dynamic tracking fleetPUT/PATCH/api/{imo}/Update specific vessel properties (e.g., destination port, coordinates)DELETE/api/{imo}/Remove a vessel from the tracking databaseSample Response (GET /api/9774264/){
+# 🚢 Asynchronous Real-Time AIS Vessel Tracker
+
+A high-performance, asynchronous Django REST application and WebSocket listener built to track global maritime vessel locations in real time using the `aisstream.io` API. Designed for fleet management, telemetry monitoring, and automated nautical metric calculations.
+
+---
+
+## 🌟 Key Features
+
+* **Real-Time Telemetry & Static Data Processing:** Captures live position updates (`PositionReport`) and vessel metadata (`ShipStaticData`) via asynchronous WebSocket streaming.
+* **Dynamic Database Filtering:** Monitors target vessels by IMO/MMSI dynamically queried from PostgreSQL or local SQLite via Django ORM.
+* **Resilient Connection Architecture:** Features exponential backoff reconnection strategies and custom keepalive handling to maintain zero-drop connection stability.
+* **Nautical Metrics Engine:** Automatically calculates distance to destination (nautical miles) and estimated time of arrival (ETA) based on real-time speed over ground (SOG) and course over ground (COG).
+* **Secure REST API:** Exposes clean CRUD endpoints via Django REST Framework, protected by environment variable configurations.
+
+---
+
+## 🏗️ System Architecture
+
+```text
++------------------------------+
+| AISStream API                |
+| (WebSocket WSS Feed)         |
++--------------+---------------+
+               |
+               v
++--------------+---------------+
+| Async Listener Loop          |
+| (websockets + asyncio)       |
++--------------+---------------+
+               |
+               v
++--------------+---------------+
+| Django ORM & Service Layer   |
+| (sync_to_async)              |
++--------------+---------------+
+               |
+               v
++--------------+---------------+
+| Database (SQLite/Postgres)   |
++--------------+---------------+
+               ^
+               |
++--------------+---------------+
+| Django REST API (DRF)        |
+| (GET / PATCH / DELETE)       |
++------------------------------+
+```
+
+---
+
+## 🛠️ Tech Stack
+
+* **Backend Framework:** Python 3.x, Django 6.1+, Django REST Framework (DRF)
+* **Asynchronous & WebSockets:** `asyncio`, `websockets`, `asgiref`
+* **Database:** Local SQLite (default fallback) or PostgreSQL / MySQL via `dj-database-url`
+* **Configuration Management:** `python-dotenv`
+
+---
+
+## 🚀 API Endpoints
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| **GET** | `/api/` | Retrieve a list of all tracked vessels with current metrics |
+| **GET** | `/api/{imo}/` | Retrieve detailed telemetry and static data for a single vessel by IMO |
+| **POST** | `/api/` | Add a new vessel to the dynamic tracking fleet |
+| **PUT/PATCH** | `/api/{imo}/` | Update specific vessel properties (e.g., destination port, coordinates) |
+| **DELETE** | `/api/{imo}/` | Remove a vessel from the tracking database |
+
+### Sample Response (`GET /api/9774264/`)
+
+```json
+{
   "id": 1,
   "name": "NAVIOS CORAL",
   "imo": "9774264",
@@ -47,15 +91,48 @@ A high-performance, asynchronous Django REST application and WebSocket listener 
   "calculated_distance_nm": 2509.2,
   "estimated_time_of_arrival": null
 }
-⚡ Local Setup Instructions for Evaluators & Recruiters1. Clone & Setup Virtual Environmentgit clone https://github.com/elwen-maculob/vessel-tracker.git
-cd vessel-tracker
+```
+
+---
+
+## ⚡ Local Setup Instructions for Evaluators & Recruiters
+
+### 1. Clone & Setup Virtual Environment
+
+```bash
+git clone https://github.com/elwen-maculob/vessel-tracker-api.git
+cd vessel-tracker-api
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
 pip install -r requirements.txt
-2. Configure Environment VariablesCreate a .env file in the root directory:SECRET_KEY=local-dev-secret-key-change-me
+```
+
+### 2. Configure Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
 DEBUG=True
+SECRET_KEY=local-dev-secret-key-change-me
 AISSTREAM_API_KEY=your_actual_aisstream_api_key_here
-3. Initialize Database & Run Migrationspython manage.py migrate
-4. Launch ServicesTerminal 1 (Django REST API Server):python manage.py runserver
-Terminal 2 (Async AIS Stream Listener):python manage.py run_ais_listener
-📌 Strategic Design NoteNote on Infrastructure Flexibility: This project is structured for effortless local evaluation via SQLite out-of-the-box, while fully supporting PostgreSQL production environments through dynamic environment injection via dj-database-url.
+```
+
+### 3. Initialize Database & Run Migrations
+
+```bash
+python manage.py migrate
+```
+
+### 4. Run Services
+
+* **Terminal 1 (AIS WebSocket Listener):**
+
+```bash
+python manage.py run_ais_listener
+```
+
+* **Terminal 2 (Django REST Server):**
+
+```bash
+python manage.py runserver
+```
