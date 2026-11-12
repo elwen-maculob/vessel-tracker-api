@@ -1,0 +1,43 @@
+# Place this file at: .github/workflows/collect-ais.yml
+name: Collect AIS positions
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # positions every 15 minutes
+    - cron: "10 */6 * * *"   # static data (destination, call sign...) every 6 hours
+  workflow_dispatch:          # lets you run it manually from the Actions tab
+
+permissions:
+  contents: read
+
+concurrency:
+  group: collect-ais
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Collect AIS data
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          AISSTREAM_API_KEY: ${{ secrets.AISSTREAM_API_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: "False"
+        run: |
+          if [ "${{ github.event.schedule }}" = "10 */6 * * *" ]; then
+            python manage.py collect_ais --statics --max-seconds 420
+          else
+            python manage.py collect_ais --max-seconds 300
+          fi
