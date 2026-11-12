@@ -59,6 +59,8 @@ A high-performance, asynchronous Django REST application and WebSocket listener 
 
 ## 🚀 API Endpoints
 
+"Endpoints are fully open via REST so recruiters can freely test CRUD operations (GET, POST, PATCH, DELETE) in Postman or Insomnia!"
+
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | **GET** | `/api/` | Retrieve a list of all tracked vessels with current metrics |
