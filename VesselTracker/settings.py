@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-dev-secret-key-change-me
 
 # SECURITY WARNING: don't run with debug turned on in production!
 ###DEBUG = False
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ###ALLOWED_HOSTS = []
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    #'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -83,7 +83,7 @@ DATABASES = {
         # Falls back to a local sqlite3 file if DATABASE_URL environment variable is missing
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=os.environ.get('DATABASE_URL') == 'True'
+        ssl_require=os.environ.get('DATABASE_SSL_REQUIRED', 'False') == 'True'
     )
 }
 #DATABASES = {
