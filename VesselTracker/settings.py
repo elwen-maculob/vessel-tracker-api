@@ -24,11 +24,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-dev-secret-key-change-me
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-###SECRET_KEY = 'django-insecure-g2oh$jwh690rme3+t1q0w3p-!g3hkgk!h12w^m6=e7&q)73try'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 ###DEBUG = False
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ###ALLOWED_HOSTS = []
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
@@ -47,7 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    #'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,7 +83,7 @@ DATABASES = {
         # Falls back to a local sqlite3 file if DATABASE_URL environment variable is missing
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=os.environ.get('DB_SSL_REQUIRE', 'False') == 'True'
+        ssl_require=os.environ.get('DATABASE_URL') == 'True'
     )
 }
 #DATABASES = {
