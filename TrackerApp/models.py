@@ -6,7 +6,6 @@ class Vessel(models.Model):
     imo = models.CharField(max_length=50, unique=True, db_index=True, help_text="IMO number")
     mmsi = models.CharField(max_length=50, blank=True, null=True, db_index=True, help_text="MMSI number")
     
-    # --- ADD THESE MISSING FIELDS HERE ---
     call_sign = models.CharField(max_length=50, blank=True, null=True, help_text="Radio call sign")
     ship_type = models.CharField(max_length=100, blank=True, null=True, help_text="Type of ship")
     ais_destination = models.CharField(
@@ -15,7 +14,6 @@ class Vessel(models.Model):
     )
     destination_port = models.CharField(max_length=100, blank=True, null=True, help_text="Destination port")
     draught = models.FloatField(blank=True, null=True, help_text="Maximum static draught")
-    # -------------------------------------
 
     destination_lat = models.FloatField(blank=True, null=True, help_text="Target Destination Latitude")
     destination_lon = models.FloatField(blank=True, null=True, help_text="Target Destination Longitude")
