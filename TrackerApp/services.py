@@ -5,7 +5,6 @@ from asgiref.sync import sync_to_async
 from django.utils import timezone
 from .models import Vessel
 
-# TEMPORARY: set to False once finished testing
 DEBUG_UNFILTERED = False
 NAV_STATUS = {
     0: "Under way using engine",
